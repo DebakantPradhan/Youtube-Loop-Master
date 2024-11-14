@@ -119,3 +119,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
     }
 });
+
+// new message handler for the 'getCurrentTimestamp' action
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "getCurrentTimestamp") {
+        const currentTimestamp = getCurrentTime();
+        sendResponse({ timestamp: currentTimestamp });
+    } else if (request.action === "startLoop") {
+        // ... existing loop start code ...
+    } else if (request.action === "stopLoop") {
+        // ... existing loop stop code ...
+    }
+});

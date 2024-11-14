@@ -4,6 +4,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const startInput = document.getElementById("startTime");
     const endInput = document.getElementById("endTime");
 
+    // Function to format seconds into a hh:mm:ss string
+    function formatTimestamp(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    // Function to update the start time input with the current timestamp
+    function updateStartTimeInput() {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'getCurrentTimestamp' }, (response) => {
+                const formattedTimestamp = formatTimestamp(response.timestamp);
+                startInput.value = formattedTimestamp;
+            });
+        });
+    }
+
+    // Add event listener to focus on start time input
+    startInput.addEventListener('focus', updateStartTimeInput);
+
     // Function to convert hh:mm:ss to seconds
     function convertToSeconds(timeString) {
         const parts = timeString.split(":").map((part) => parseInt(part, 10));
