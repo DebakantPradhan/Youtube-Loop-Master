@@ -4,35 +4,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const startInput = document.getElementById("startTime");
     const endInput = document.getElementById("endTime");
 
-    // Function to format seconds into a hh:mm:ss string
+    // Function to format seconds into a mm:ss string
     function formatTimestamp(seconds) {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+            .toString()
+            .padStart(2, "0")}`;
     }
 
     // Function to update the start time input with the current timestamp
     function updateStartTimeInput() {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'getCurrentTimestamp' }, (response) => {
-                const formattedTimestamp = formatTimestamp(response.timestamp);
-                startInput.value = formattedTimestamp;
-            });
+            chrome.tabs.sendMessage(
+                tabs[0].id,
+                { action: "getCurrentTimestamp" },
+                (response) => {
+                    const formattedTimestamp = formatTimestamp(
+                        response.timestamp
+                    );
+                    startInput.value = formattedTimestamp;
+                }
+            );
         });
     }
 
     // Add event listener to focus on start time input
-    startInput.addEventListener('focus', updateStartTimeInput);
+    startInput.addEventListener("focus", updateStartTimeInput);
 
-    // Function to convert hh:mm:ss to seconds
+    // Function to convert mm:ss to seconds
     function convertToSeconds(timeString) {
         const parts = timeString.split(":").map((part) => parseInt(part, 10));
         let seconds = 0;
 
-        if (parts.length === 3) {
-            // hh:mm:ss format
-            seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-        } else if (parts.length === 2) {
+        if (parts.length === 2) {
             // mm:ss format
             seconds = parts[0] * 60 + parts[1];
         } else if (parts.length === 1) {
@@ -43,37 +48,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return seconds;
     }
 
-    // Function to update input value and maintain hh:mm:ss structure
+    // Function to update input value and maintain mm:ss structure
     function updateTimeInput(inputElement, increment) {
         const timeParts = inputElement.value
             .split(":")
             .map((part) => parseInt(part, 10));
 
         // Handle minutes and seconds
-        if (timeParts.length === 3) {
-            timeParts[2] += increment; // Modify seconds
-            if (timeParts[2] >= 60) {
-                timeParts[2] = 0;
-                timeParts[1] += 1; // Increase minutes if seconds overflow
-            } else if (timeParts[2] < 0) {
-                timeParts[2] = 59;
-                timeParts[1] -= 1; // Decrease minutes if seconds underflow
-            }
-            if (timeParts[1] >= 60) {
-                timeParts[1] = 0;
-                timeParts[0] += 1; // Increase hours if minutes overflow
-            } else if (timeParts[1] < 0) {
-                timeParts[1] = 59;
-                timeParts[0] -= 1; // Decrease hours if minutes underflow
-            }
-            if (timeParts[0] < 0) timeParts[0] = 0; // Prevent negative hours
-        } else if (timeParts.length === 2) {
+        if (timeParts.length === 2) {
             timeParts[1] += increment; // Modify seconds
             if (timeParts[1] >= 60) {
                 timeParts[1] = 0;
+                timeParts[0] += 1; // Increase minutes if seconds overflow
             } else if (timeParts[1] < 0) {
                 timeParts[1] = 59;
+                timeParts[0] -= 1; // Decrease minutes if seconds underflow
             }
+            if (timeParts[0] < 0) timeParts[0] = 0; // Prevent negative minutes
         } else {
             timeParts[0] += increment; // Modify seconds
             if (timeParts[0] >= 60) {
@@ -83,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Update input value maintaining the hh:mm:ss format
+        // Update input value maintaining the mm:ss format
         inputElement.value = timeParts
             .map((part) => String(part).padStart(2, "0"))
             .join(":");
