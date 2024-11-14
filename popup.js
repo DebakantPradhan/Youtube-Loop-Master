@@ -20,10 +20,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 tabs[0].id,
                 { action: "getCurrentTimestamp" },
                 (response) => {
-                    const formattedTimestamp = formatTimestamp(
-                        response.timestamp
+                    const currentTimestamp = response.timestamp;
+                    const formattedStartTimestamp =
+                        formatTimestamp(currentTimestamp);
+                    const formattedEndTimestamp = formatTimestamp(
+                        currentTimestamp + 30
                     );
-                    startInput.value = formattedTimestamp;
+
+                    startInput.value = formattedStartTimestamp;
+                    endInput.value = formattedEndTimestamp;
                 }
             );
         });
