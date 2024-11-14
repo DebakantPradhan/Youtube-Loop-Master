@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stopButton = document.getElementById("stopLoop");
     const startInput = document.getElementById("startTime");
     const endInput = document.getElementById("endTime");
+    const alertDiv = document.getElementById("alert");
 
     // Function to format seconds into a mm:ss string
     function formatTimestamp(seconds) {
@@ -110,6 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     endInput.addEventListener("wheel", (e) => handleMouseScroll(e, endInput));
 
+    // Function to show custom alert
+    function showAlert(message) {
+        alertDiv.textContent = message;
+        alertDiv.style.display = "block";
+        setTimeout(() => {
+            alertDiv.style.display = "none";
+        }, 3000);
+    }
+
     // Start Loop button click event
     startButton.addEventListener("click", () => {
         const startTime = startInput.value;
@@ -118,6 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Convert time to seconds
         const startSeconds = convertToSeconds(startTime);
         const endSeconds = convertToSeconds(endTime);
+
+        // Validate that end time is after start time
+        if (endSeconds <= startSeconds) {
+            showAlert("End time must be after start time.");
+            return;
+        }
 
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.tabs.sendMessage(tabs[0].id, {
