@@ -66,7 +66,7 @@ function loopCurrentSong(startTime, endTime) {
     const interval = setInterval(() => {
         try {
             const currentTime = getCurrentTime();
-            console.log("Current time:", currentTime);
+            // console.log("Current time:", currentTime);
 
             // If video passes the end time, jump back to start time
             if (currentTime >= endTime) {
