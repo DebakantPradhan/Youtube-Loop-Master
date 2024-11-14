@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 200px;
+      padding: 10px;
+    }
+    .input-group {
+      margin: 10px 0;
+    }
+    input {
+      width: 80px;
+      margin: 5px;
+    }
+    button {
+      width: 100%;
+      margin: 5px 0;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-group">
+    <label>Start Time (seconds):</label>
+    <input type="number" id="startTime" min="0" step="1" value="0">
+  </div>
+  <div class="input-group">
+    <label>End Time (seconds):</label>
+    <input type="number" id="endTime" min="0" step="1" value="60">
+  </div>
+  <button id="startLoop">Start Loop</button>
+  <button id="stopLoop">Stop Loop</button>
+  <script src="popup.js"></script>
+</body>
+</html>
